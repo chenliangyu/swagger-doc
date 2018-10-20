@@ -1,6 +1,6 @@
 {
   "name": "@ones-ai/generate-swagger-doc",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "dependencies": {
     "fs-extra": "^7.0.0",
     "minimist": "^1.2.0",

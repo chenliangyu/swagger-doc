@@ -22,8 +22,7 @@
   },
   "exclude": [
     "config-overrides.js",
-    "generate_spec.js",
-    "generate_doc_options.js",
+    "generate_doc",
     "node_modules",
     "build",
     "scripts",

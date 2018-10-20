@@ -5,6 +5,7 @@ const path = require("path");
 const minimist = require("minimist")
 const fs = require("fs-extra")
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {generateSpecs} = require("./generate_doc/generate_spec");
 
 const addAntdPlugin = (config) => {
@@ -41,14 +42,28 @@ const updateEnv = (config) => {
         "SWAGGER_BASE_PATH":args.basePath,
         "SWAGGER_SERVER":args.server
       }
-      console.log(plugin);
-      return config;
+      break;
     }
   }
   return config;
 }
 
+const dontMinifyJSInHtml = (config) => {
+  for(let i = 0;i<config.plugins.length;i++){
+    const plugin = config.plugins[i];
+    if(plugin instanceof HtmlWebpackPlugin){
+      if(plugin.options.minify && typeof plugin.options.minify !== "boolean"){
+        plugin.options.minify = {...plugin.options.minify,minifyJS:false}
+      }
+      console.log(plugin);
+      break;
+    }
+  }
+  return config
+}
+
+
 module.exports = (config,env) => {
-  const rewires = compose(addAntdPlugin,updateEnv)
+  const rewires = compose(addAntdPlugin,updateEnv,dontMinifyJSInHtml)
   return rewires(config,env);
 }

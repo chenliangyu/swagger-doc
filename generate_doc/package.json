@@ -1,0 +1,12 @@
+{
+  "name": "@ones-ai/generate-swagger-doc",
+  "version": "0.1.0",
+  "dependencies": {
+    "fs-extra": "^7.0.0",
+    "minimist": "^1.2.0",
+    "handlebars": "^4.0.12"
+  },
+  "bin": {
+    "generate_swagger_doc": "generate_doc_options.js"
+  }
+}

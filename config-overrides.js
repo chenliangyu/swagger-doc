@@ -5,7 +5,7 @@ const path = require("path");
 const minimist = require("minimist")
 const fs = require("fs-extra")
 const webpack = require("webpack");
-const {generateSpecs} = require("./generate_spec");
+const {generateSpecs} = require("./generate_doc/generate_spec");
 
 const addAntdPlugin = (config) => {
   const tsLoader = getLoader(

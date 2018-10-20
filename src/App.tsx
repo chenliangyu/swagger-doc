@@ -47,6 +47,7 @@ class App extends React.Component {
     const {specs,server,basePath} = getDocOptions();
     return (
       <Layout className="App">
+<<<<<<< HEAD
         <Sidebar 
           basePath={basePath} 
           selectedPath={this.state.selectedPath} 
@@ -54,6 +55,10 @@ class App extends React.Component {
           onSelected={this.handleSelected}
         />
         <PageContent selectedPath={this.state.selectedPath} server={server}/>
+=======
+        <Sidebar basePath="/spec" selectedPath={this.state.selectedPath} specs={this.getSpec()} onSelected={this.handleSelected}/>
+        <PageContent selectedPath={this.state.selectedPath} server={this.getServer()}/>
+>>>>>>> b8f6c8fb85b17becc80a6aad59a71d959ad332a5
       </Layout>
     );
   }

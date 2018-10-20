@@ -8,6 +8,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {generateSpecs} = require("./generate_doc/generate_spec");
 
+
 const addAntdPlugin = (config) => {
   const tsLoader = getLoader(
     config.module.rules,
@@ -38,9 +39,9 @@ const updateEnv = (config) => {
     if(plugin instanceof webpack.DefinePlugin){
       plugin.definitions["process.env"] = {
         ...plugin.definitions["process.env"],
-        "SWAGGER_SPECS":generateSpecs(args),
-        "SWAGGER_BASE_PATH":args.basePath,
-        "SWAGGER_SERVER":args.server
+        "SWAGGER_SPECS":JSON.stringify(generateSpecs(args)),
+        "SWAGGER_BASE_PATH":JSON.stringify(args.basePath),
+        "SWAGGER_SERVER":JSON.stringify(args.server)
       }
       break;
     }

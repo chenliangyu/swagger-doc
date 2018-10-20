@@ -23,7 +23,7 @@ exports.generateSpecs = (args) => {
     if(fs.pathExistsSync(folderPath)){
       try{
         const result = generateSpecArray(folderPath);
-        return JSON.stringify(result);
+        return result;
       }catch(e){
         throw e;
       }

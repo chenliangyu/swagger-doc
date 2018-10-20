@@ -7,6 +7,6 @@
     "handlebars": "^4.0.12"
   },
   "bin": {
-    "generate_swagger_doc": "generate_doc_options.js"
+    "generate-swagger-doc": "generate_doc_options.js"
   }
 }

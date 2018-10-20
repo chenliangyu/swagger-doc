@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: project 重置密码验证码
+  description: >-
+    该接口支持以下功能：
+    2. 请求发送重置密码验证码
+  version: v1
+servers:
+  - url: 'https://api.ones.ai/project/v1/'
+paths:
+  /auth/request_reset_code:
+    post:
+      tags:
+        - Auth
+      description: 请求发送重置密码验证码到指定邮箱或者指定手机
+      operationId: AuthRequestResetCode
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/schemas.yaml#/SuccessResponse'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '/spec/api/project/auth/errors.yaml#/MalformedJSON'
+                  - $ref: '/spec/api/project/auth/errors.yaml#/MissingParameterEmail'
+        '615':
+          description: 团队中找不到 status === 1 且 team_member_status === 1 的用户
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/NotFoundUser'
+        '801':
+          description: 参数格式不正确
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "'/spec/api/project/auth/errors.yaml#/InvalidParameterUserPhoneInvalidFormat"
+                  - $ref: "'/spec/api/project/auth/errors.yaml#/InvalidParameterUserEmailInvalidFormat"
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/errors.yaml#/UnknownError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - description: 重置密码请求发送至邮箱
+                  type: string
+                  properties:
+                    email:
+                      $ref: '/spec/api/project/auth/schemas.yaml#/email'
+                  required:
+                    - phone
+                - description: 重置密码请求发送至手机
+                  type: string
+                  properties:
+                    phone:
+                      $ref: '/spec/api/project/auth/schemas.yaml#/phone'
+                  required:
+                    - phone
+        description: 请求发送重置密码验证码
+        required: true

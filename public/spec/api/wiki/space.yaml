@@ -1,0 +1,256 @@
+openapi: 3.0.0
+info:
+  title: wiki page相关接口
+  description: |
+
+    wiki space相关接口
+
+  version: '2.0'
+
+parameters:
+  teamUUID:
+    name: teamUUID
+    in: path
+    description: 团队UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  spaceUUID:
+    name: spaceUUID
+    in: path
+    description: 页面组UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  pageUUID:
+    name: pageUUID
+    in: path
+    description: 页面UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  title:
+    name: title
+    in: body
+    description: space title
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  description:
+    name: description
+    in: body
+    description: space description
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string      
+servers:
+  - url: 'https://api.ones.ai/project/v1'
+paths:
+  /team/{teamUUID}/spaces:
+    get:
+      tags: 
+        - Space
+      summary: 获取 spaces
+      parameters:
+        - $ref: '#/parameters/teamUUID'
+      responses:
+        "200":
+          description: 返回space list
+          content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ListSpaceResponse'
+        "500":
+          description: ServerError
+                       
+  /team/{teamUUID}/spaces/add:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/title'
+      - $ref: '#/parameters/description'
+      tags:
+        - Space
+      summary: 添加space
+      responses:
+        "200":
+          description: 成功
+        "500":
+          description: ServerError
+
+  /team/{teamUUID}/space/{spaceUUID}:
+    get:
+      tags: 
+        - Space
+      summary: 获取 space
+      parameters:
+        - $ref: '#/parameters/teamUUID'
+        - $ref: '#/parameters/spaceUUID'
+      responses:
+        "200":
+          description: 返回space详情
+          content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/Space'
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/space/{spaceUUID}/update:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      - $ref: '#/parameters/title'
+      - $ref: '#/parameters/description'
+      tags:
+        - Space
+      summary: 更新space
+      responses:
+        "200":
+          description: 成功
+        "500":
+          description: ServerError
+
+  /team/{teamUUID}/space/{spaceUUID}/delete:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      tags:
+        - Space
+      summary: delete space
+      responses:
+        "200":
+          description: 成功
+        "404":
+          description: NotFound.Space 找不到该space
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/my_spaces:
+    get:
+      tags: 
+        - Space
+      summary: 获取 用户可见的spaces
+      parameters:
+        - $ref: '#/parameters/teamUUID'
+      responses:
+        "200":
+          description: 返回space list
+          content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ListSpaceResponse'
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/recent_spaces:
+    get:
+      tags: 
+        - Space
+      summary: 获取 用户最近浏览的spaces
+      parameters:
+        - $ref: '#/parameters/teamUUID'
+      responses:
+        "200":
+          description: 返回space list
+          content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ListSpaceResponse'
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/space/{spaceUUID}/browse:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      tags:
+        - Space
+      summary: 记录space浏览接口
+      responses:
+        "200":
+          description: 成功
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/space/{spaceUUID}/pin:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      tags:
+        - Space
+      summary: 置顶某个space
+      responses:
+        "200":
+          description: 成功
+        "500":
+          description: ServerError
+          
+  /team/{teamUUID}/space/{spaceUUID}/unpin:
+    post:
+      parameters: 
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      tags:
+        - Space
+      summary: 取消置顶某个space
+      responses:
+        "200":
+          description: 成功
+        "500":
+          description: ServerError
+          
+definitions:
+  Space:
+    type: object
+    properties:
+      uuid:
+        description: uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      owner_uuid:
+        description: owner_uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      title:
+        description: title
+        type: string
+      description:
+        description: description
+        type: string
+      create_time:
+        description: create_time
+        type: integer
+        format: int64
+      updated_time:
+        description: updated_time
+        type: integer
+        format: int64
+      admins:
+        descriptions: admins
+        type: array
+        items:
+          type: string
+  ListSpaceResponse:
+    type: object
+    properties:
+      spaces:
+        type: array
+        items:
+          $ref: '#/definitions/Space'

@@ -1,0 +1,26 @@
+
+parameters:
+  Ones-User-Id:
+    name: Ones-User-Id
+    in: header
+    required: true
+    schema:
+      type: string
+  Ones-Auth-Token:
+    name: Ones-Auth-Token
+    in: header
+    required: true
+    schema:
+      type: string
+  teamUUID:
+    name: teamUUID
+    in: path
+    required: true
+    schema:
+      type: string
+  spaceUUID:
+    name: spaceUUID
+    in: path
+    required: true
+    schema:
+      type: string

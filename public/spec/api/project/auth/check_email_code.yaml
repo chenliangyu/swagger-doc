@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: project 
+  description: >-
+    该接口支持以下功能：
+    9. 验证邮箱验证码(激活邮箱）
+  version: v1
+servers:
+  - url: 'https://api.ones.ai/project/v1/'
+paths:
+  /auth/check_email_code:
+    post:
+      tags:
+        - Auth 
+      description: 验证邮箱验证码(激活邮箱）
+      operationId: CheckEmailCodeRequest
+      responses:
+        '200':
+          description: 激活邮箱成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    $ref: '/spec/api/project/auth/schemas.yaml#/email'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/MalformedJSON'
+        '605':
+          description: 验证码不存在或者无效
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureInvalidCode'
+        '606':
+          description: 验证码过期（有效期为15分钟）
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureCodeExpired'
+        '615':
+          description: 用户不存在
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/NotFoundUser'
+        '801':
+          description: 用户不存在
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureInvalidCode'
+        '804':
+          description: 超过调用频率限制
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/Blocked'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/errors.yaml#/UnknownError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 激活邮箱请求
+              type: object
+              properties:
+                code:
+                  description: 邮箱验证码
+                  type: string
+              required:
+                - code

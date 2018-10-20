@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: project 登陆
+  description: >-
+    该接口支持以下功能：
+    6. 检查手机验证码是否正确
+  version: v1
+servers:
+  - url: 'https://api.ones.ai/project/v1/'
+paths:
+  /auth/check_phone_code:
+    get:
+      tags:
+        - Auth
+      description: 检查手机验证码是否正确
+      operationId: CheckPhoneCode
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/schemas.yaml#/SuccessResponse'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/MalformedJSON'
+        '605':
+          description: 验证码不存在或者无效
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureInvalidCode'
+        '606':
+          description: 验证码过期（有效期为15分钟）
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureCodeExpired'
+        '801':
+          description: 参数格式不正确
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '/spec/api/project/auth/errors.yaml#/InvalidParameterPhoneInvalidFormat'
+                  - $ref: '/spec/api/project/auth/errors.yaml#/VerificationFailureInvalidCode'
+        '804':
+          description: 超过调用频率限制
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/Blocked'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/errors.yaml#/UnknownError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 检查手机验证码请求
+              type: object
+              properties:
+                phone:
+                  $ref: '/spec/api/project/auth/schemas.yaml#/phone'
+                code:
+                  description: 手机号验证码
+                  type: string
+                  minLength: 0
+                  maxLength: 16
+              required:
+                - phone
+                - code
+        description: 检查手机验证码是否正确

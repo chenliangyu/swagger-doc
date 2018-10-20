@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: wiki message相关接口
+  description: |
+
+    wiki message相关接口
+
+    1.page下的messages
+    2.发送页面评论
+
+  version: '2.0'
+
+parameters:
+  teamUUID:
+    name: teamUUID
+    in: path
+    description: 团队UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  spaceUUID:
+    name: spaceUUID
+    in: path
+    description: 页面组UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  pageUUID:
+    name: pageUUID
+    in: path
+    description: 页面UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  since:
+    name: since
+    in: query
+    description: 起始时间
+    required: false
+    schema:
+      type: int64
+  max:
+    name: max
+    in: query
+    description: 截止时间
+    required: false
+    schema:
+      type: int64
+  count:
+    name: count
+    in: query
+    description: 条数
+    required: true
+    schema:
+      type: integer
+  content:
+    name: content
+    in: body
+    description: 评论内容
+    required: true
+    schema:
+      type: string
+servers:
+  - url: 'https://api.ones.ai/project/v1'
+paths:
+  /team/{teamUUID}/space/{spaceUUID}/page/{pageUUID}/messages:
+    get:
+      tags:
+        - Message
+      summary: 获取page下的messages
+      parameters:
+        - $ref: '#/parameters/teamUUID'
+        - $ref: '#/parameters/spaceUUID'
+        - $ref: '#/parameters/pageUUID'
+        - $ref: '#/parameters/since'
+        - $ref: '#/parameters/max'
+        - $ref: '#/parameters/count'
+      responses:
+        "200":
+          description: 返回message列表
+          content:
+              application/json:
+                schema:
+                  $ref: '#/definitions/ListMessagesResponse'
+        "404":
+          description: 找不到
+
+  /team/{teamUUID}/space/{spaceUUID}/page/{pageUUID}/send_comment:
+    post:
+      parameters:
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      - $ref: '#/parameters/pageUUID'
+      - $ref: '#/parameters/content'
+      tags:
+        - Message
+      summary: 发送页面评论
+      responses:
+        "200":
+          description: 发送成功
+        "500":
+          description: 发送失败
+definitions:
+  Message:
+    type: object
+    properties:
+      uuid:
+        description: uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      user_uuid:
+        description: user_uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      space_uuid:
+        description: space_uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      page_uuid:
+        description: page_uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      send_time:
+        description: 发送时间
+        type: int64
+      action:
+        description: action
+        type: string
+        enum:
+          - "add"
+          - "update"
+          - "delete"
+          - "move"
+          - "restore"
+          - "revert"
+          - "comment"
+      title:
+        description: title
+        type: string
+      message:
+        description: message
+        type: string
+      ext:
+        type: object
+        required: false
+        description: 额外信息
+
+  ListMessagesResponse:
+    type: object
+    properties:
+      messages:
+        description: messages
+        type: array
+        items:
+          $ref: '#/definitions/Message'

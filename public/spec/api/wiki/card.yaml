@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: wiki card相关接口
+  description: |
+
+    wiki card相关接口
+
+    1. 获取card详情
+    2. 创建card
+    3. 更新card
+
+  version: '2.0'
+
+parameters:
+  teamUUID:
+    name: teamUUID
+    in: path
+    description: 团队UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  ref_type:
+    name: ref_type
+    in: query
+    description: 1 普通页面的card 2 模板下的card
+    required: true
+    schema:
+      type: string
+  spaceUUID:
+    name: spaceUUID
+    in: path
+    description: 页面组UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+  cardUUID:
+    name: cardUUID
+    in: path
+    description: 卡片UUID
+    required: true
+    minLength: 8
+    maxLength: 8
+    schema:
+      type: string
+servers:
+  - url: 'https://api.ones.ai/project/v1'
+paths:
+  /team/{teamUUID}/space/{spaceUUID}/card/{cardUUID}:
+    get:
+      tags:
+        - card detail
+      summary: 获取card详情
+      parameters:
+      - $ref: '#/parameters/ref_type'
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      - $ref: '#/parameters/cardUUID'
+      responses:
+        "200":
+          description: card
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Card'
+        "404":
+          description: NotFound.Card
+  /team/{teamUUID}/space/{spaceUUID}/cards/add:
+    post:
+      tags:
+        - create card
+      parameters:
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      - $ref: '#/parameters/cardUUID'
+      - in: body
+        name: AddCardRequest
+        description: 请求体
+        required: true
+        schema:
+          $ref: '#/definitions/AddCardRequest'
+      responses:
+        "200":
+          description: success
+        "404":
+          description: NotFound.Page NotFound.Draft NotFound.Attachment
+        "403":
+          description: ConstraintViolation.DraftStatusInvalid
+
+  /team/{teamUUID}/space/{spaceUUID}/card/{cardUUID}/update:
+    post:
+      parameters:
+      - $ref: '#/parameters/teamUUID'
+      - $ref: '#/parameters/spaceUUID'
+      - $ref: '#/parameters/cardUUID'
+      tags:
+        - update card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UpdateCardRequest'
+        description: 更新card的请求体
+        required: true
+      responses:
+        "200":
+          description: success
+        "404":
+          description: NotFound.Card NotFound.Attachment
+
+definitions:
+  Card:
+    properties:
+      uuid:
+        description: 卡片uuid
+        type: string
+        maxLength: 8
+        minLength: 8
+      type:
+        description: 卡片类型
+        type: integer
+      page_uuid:
+        description: page_uuid
+        type: string
+      draft_uuid:
+        description: draft_uuid
+        type: string
+      template_uuid:
+        description: template_uuid
+        type: string
+      config:
+        description: 卡片配置
+        type: object
+  AddCardRequest:
+    properties:
+      type:
+        description: 卡片类型
+        type: integer
+      page_uuid:
+        description: page_uuid
+        type: string
+      draft_uuid:
+        description: draft_uuid
+        type: string
+      template_uuid:
+        description: template_uuid
+        type: string
+      config:
+        description: 卡片配置
+        type: object
+  Attachment:
+    properties:
+      uuid:
+        description: uuid
+        type: string
+      name:
+        description: name
+        type: string
+  UpdateCardRequest:
+    properties:
+      add:
+        description: 新增attachment
+        type: array
+        items:
+            $ref: "#/definitions/Attachment"
+      remove:
+        description: 删除attachment
+        type: array
+        items:
+            $ref: "#/definitions/Attachment"
+      ref_type:
+        description: 1 普通页面的card 2 模板下的card
+        type: integer

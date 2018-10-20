@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: project 登陆
+  description: >-
+    该接口支持以下功能：
+    5. 发送验证码,校验手机号是否有效或已被使用
+  version: v1
+servers:
+  - url: 'https://api.ones.ai/project/v1/'
+paths:
+  /auth/verify_phone:
+    post:
+      tags:
+        - Auth
+      description: 校验手机号是否有效或已被使用
+      operationId: VerifyPhone
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/schemas.yaml#/SuccessResponse'
+        '400':
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/MalformedJSON'
+        '801':
+          description: 参数格式不正确
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/InvalidParameterPhoneInvalidFormat'
+        '804':
+          description: 超过调用频率限制
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/api/project/auth/errors.yaml#/Blocked'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '/spec/common/errors.yaml#/UnknownError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '/spec/api/project/auth/schemas.yaml#/phone'
+        description: 发送验证码，校验手机号是否有效或已被使用
+        required: true

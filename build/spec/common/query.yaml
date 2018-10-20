@@ -1,0 +1,311 @@
+components:
+  schemas:
+    Query:
+      oneOf:
+        - $ref: '#/components/schemas/query_condition/must'
+        - $ref: '#/components/schemas/query_condition/should'
+        - $ref: '#/components/schemas/query_condition/must_not'
+        - $ref: '#/components/schemas/query_condition/equal'
+        - $ref: '#/components/schemas/query_condition/not_equal'
+        - $ref: '#/components/schemas/query_condition/in'
+        - $ref: '#/components/schemas/query_condition/not_in'
+        - $ref: '#/components/schemas/query_condition/range'
+        - $ref: '#/components/schemas/query_condition/date_range'
+        - $ref: '#/components/schemas/query_condition/exists'
+
+    query_condition:
+      must:
+        description: >-
+          and 运算，当数组内的所有条件都满足时为 true
+          must,should,must_not 可以嵌套自己，最多5层（因为swagger无法嵌套自己，所以这里没有嵌套这些条件）
+        type: array
+        items:
+          allOf:
+            # - $ref: '#/components/schemas/allof_conditions'
+            - $ref: '#/components/schemas/allof_querys'
+      
+      should:
+        description: >-
+          or 运算，当数组内任意一个条件满足时为 true
+          must,should,must_not 可以嵌套自己，最多5层（因为swagger无法嵌套自己，所以这里没有嵌套这些条件）
+        type: array
+        items:
+          allOf:
+            - $ref: '#/components/schemas/allof_querys'
+
+      must_not:
+        description: >-
+          and-not 运算，当数组内任意一个条件满足时为 false
+          must,should,must_not 可以嵌套自己，最多5层（因为swagger无法嵌套自己，所以这里没有嵌套这些条件）
+        type: array
+        items:
+          allOf:
+            - $ref: '#/components/schemas/allof_querys'
+            
+      equal:
+        description: 当存在字段，且字段的值等于指定的值时为 true
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/oneof_conditions'
+
+      not_equal:
+        description: 当存在字段，且字段的值不等于指定的值时为 true
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/oneof_conditions'
+          
+      in:
+        description: 当存在字段，且字段的值为数组内的其中一个时为 true
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/allof_conditions'
+          
+      not_in:
+        description: 当存在字段，且字段的值不是数组内的任何一个时为 true
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/allof_conditions'
+
+      range:
+        description: 当存在字段，且字段的值在范围内时为 true，可用的参数包括 'gt', 'gte', 'lt' 和 'lte'，分别表示 '>', '>=', '<' 和 '<='，仅能用在数字或者日期类型的属性
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/condition_attrs/create_time'
+          - $ref: '#/components/schemas/condition_attrs/deadline'
+          - $ref: '#/components/schemas/condition_attrs/server_update_stamp'
+      
+      date_range:
+        description: 当存在字段，且字段的值符合指定条件时为 true，仅能用在日期类型的属性
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/condition_attrs/date_time'
+          - $ref: '#/components/schemas/condition_attrs/server_update_stamp'
+      
+      exists:
+        description: 当存在字段，且字段的值不等于 null 或者空数组时为 true
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/oneof_conditions'
+
+    oneof_querys:
+      oneOf:
+        # - $ref: '#/components/schemas/query_condition/must'
+        # - $ref: '#/components/schemas/query_condition/should'
+        # - $ref: '#/components/schemas/query_condition/must_not'
+        - $ref: '#/components/schemas/query_condition/equal'
+        - $ref: '#/components/schemas/query_condition/not_equal'
+        - $ref: '#/components/schemas/query_condition/in'
+        - $ref: '#/components/schemas/query_condition/not_in'
+        - $ref: '#/components/schemas/query_condition/range'
+        - $ref: '#/components/schemas/query_condition/date_range'
+        - $ref: '#/components/schemas/query_condition/exists'
+    
+    allof_querys:
+      allOf:
+        # - $ref: '#/components/schemas/query_condition/must'
+        # - $ref: '#/components/schemas/query_condition/should'
+        # - $ref: '#/components/schemas/query_condition/must_not'
+        - $ref: '#/components/schemas/query_condition/equal'
+        - $ref: '#/components/schemas/query_condition/not_equal'
+        - $ref: '#/components/schemas/query_condition/in'
+        - $ref: '#/components/schemas/query_condition/not_in'
+        - $ref: '#/components/schemas/query_condition/range'
+        - $ref: '#/components/schemas/query_condition/date_range'
+        - $ref: '#/components/schemas/query_condition/exists'
+
+    allof_conditions:
+      allOf:
+        - $ref: '#/components/schemas/condition_attrs/create_time'
+        - $ref: '#/components/schemas/condition_attrs/server_update_stamp'
+        - $ref: '#/components/schemas/condition_attrs/priority'
+        - $ref: '#/components/schemas/condition_attrs/owner'
+        - $ref: '#/components/schemas/condition_attrs/assign'
+        - $ref: '#/components/schemas/condition_attrs/project_uuid'
+        - $ref: '#/components/schemas/condition_attrs/issue_type_uuid'
+        - $ref: '#/components/schemas/condition_attrs/sprint_uuid'
+        - $ref: '#/components/schemas/condition_attrs/status_uuid'
+        - $ref: '#/components/schemas/condition_attrs/deadline'
+        - $ref: '#/components/schemas/condition_attrs/field_values.{field_uuid}'
+    oneof_conditions:
+      oneOf:
+        - $ref: '#/components/schemas/condition_attrs/create_time'
+        - $ref: '#/components/schemas/condition_attrs/server_update_stamp'
+        - $ref: '#/components/schemas/condition_attrs/priority'
+        - $ref: '#/components/schemas/condition_attrs/owner'
+        - $ref: '#/components/schemas/condition_attrs/assign'
+        - $ref: '#/components/schemas/condition_attrs/project_uuid'
+        - $ref: '#/components/schemas/condition_attrs/issue_type_uuid'
+        - $ref: '#/components/schemas/condition_attrs/sprint_uuid'
+        - $ref: '#/components/schemas/condition_attrs/status_uuid'
+        - $ref: '#/components/schemas/condition_attrs/deadline'
+        - $ref: '#/components/schemas/condition_attrs/field_values.{field_uuid}'
+
+    condition_attrs:
+      create_time:
+        properties:
+          create_time:
+            type: object
+            description: 创建时间，微秒
+            $ref: '#/components/schemas/range_attrs'
+      date_time:
+        properties:
+          date_time:
+            type: object
+            description: 时间
+            $ref: '#/components/schemas/date_range'
+
+      server_update_stamp:
+        properties:
+          server_update_stamp:
+            description: 修改时间，微秒
+            type: integer
+            format: int64
+      priority:
+        properties:
+          priority:
+            description: 优先级 uuid
+            type: string
+      owner:
+        properties:
+          owner:
+            description: 任务创建者 uuid
+            type: string
+      assign:
+        properties:
+          assign:
+            description: 任务负责人uuid
+            type: string
+      project_uuid:
+        properties:
+          project_uuid:
+            description: 项目uuid
+            type: string
+      issue_type_uuid:
+        properties:
+          issue_type_uuid:
+            description: 任务类型uuid
+            type: string 
+      sprint_uuid:
+        properties:
+          sprint_uuid:
+            description: 迭代uuid
+            type: string
+      status_uuid:
+        properties:
+          status_uuid:
+            description: 任务状态uuid
+            type: string
+      deadline:
+        properties:
+          deadline:
+            description: 截止日期，秒
+            type: integer
+            format: int64
+      field_values.{field_uuid}:
+        properties:
+          field_values.{field_uuid}:
+            description: 自定义属性或者固有属性
+            AnyValue:
+              anyOf:
+                - type: array
+                  items: 
+                    type: string 
+                - type: array
+                  items:
+                    type: int64
+
+    range_attrs:
+      allOf:
+      - oneOf:
+        - oneOf:
+          - properties:
+              gt:
+                description: 大于
+                oneOf:
+                  - $ref: '#/components/schemas/number_date'
+                  - $ref: '#/components/schemas/relative_date'
+          - properties:
+              gte:
+                description: 大于等于
+                oneOf:
+                  - $ref: '#/components/schemas/number_date'
+                  - $ref: '#/components/schemas/relative_date'
+        - oneOf:
+          - properties:
+              lt:
+                description: 小于
+                oneOf:
+                  - $ref: '#/components/schemas/number_date'
+                  - $ref: '#/components/schemas/relative_date'
+          - properties:
+              lte:
+                description: 小于等于
+                oneOf:
+                  - $ref: '#/components/schemas/number_date'
+                  - $ref: '#/components/schemas/relative_date'
+      - properties:
+          time_zone:
+            description: 进行日期比较时所用的时区，使用标准格式，比如 '+08:00'
+            pattern: ^([+-])([01][0-9]|2[0-3]):([0-5][0-9])$
+    
+    date_range:
+      allOf:
+      - oneOf:
+        - oneOf:
+          - properties:
+              gt:
+                description: 大于
+                oneOf:
+                  - $ref: '#/components/schemas/date'
+                  - $ref: '#/components/schemas/relative_date'
+          - properties:
+              gte:
+                description: 大于等于
+                oneOf:
+                  - $ref: '#/components/schemas/date'
+                  - $ref: '#/components/schemas/relative_date'
+        - oneOf:
+          - properties:
+              lt:
+                description: 小于
+                oneOf:
+                  - $ref: '#/components/schemas/date'
+                  - $ref: '#/components/schemas/relative_date'
+          - properties:
+              lte:
+                description: 小于等于
+                oneOf:
+                  - $ref: '#/components/schemas/date'
+                  - $ref: '#/components/schemas/relative_date'
+      - properties:
+          time_zone:
+            description: 进行日期比较时所用的时区，使用标准格式，比如 '+08:00'
+            pattern: ^([+-])([01][0-9]|2[0-3]):([0-5][0-9])$
+    
+      equal:
+        properties:
+          equal:
+            description: 等于，即大于等于某个日期的 0 点，并且小于下一天的 0 点
+            oneOf:
+              - $ref: '#/components/schemas/date'
+              - $ref: '#/components/schemas/relative_date'
+      not_equal:
+        properties:
+          not_equal:
+            description: 不等于，即小于某个日期的 0 点，或者大于等于下一天的 0 点
+            oneOf:
+              - $ref: '#/components/schemas/date'
+              - $ref: '#/components/schemas/relative_date'
+    
+    number_date:
+      type: integer
+      format: int64
+      description: 精确到秒
+    date:
+      type: string
+      format: date-time
+      description: 必须满足 ISO 8601 格式中的日期部分格式，即 yyyy-MM-dd
+    relative_date:
+      type: string 
+      description: 动态时间
+      pattern: ^now(/d)?(\s*([+-])\s*(([1-9][0-9]*)d)?(([1-9][0-9]*)h)?(([1-9][0-9]*)m)?(([1-9][0-9]*)s)?)?$

@@ -30,7 +30,7 @@ class App extends React.Component {
   public render() {
     return (
       <Layout className="App">
-        <Sidebar basePath="/spec/api" selectedPath={this.state.selectedPath} specs={this.getSpec()} onSelected={this.handleSelected}/>
+        <Sidebar basePath="/spec" selectedPath={this.state.selectedPath} specs={this.getSpec()} onSelected={this.handleSelected}/>
         <PageContent selectedPath={this.state.selectedPath} server={this.getServer()}/>
       </Layout>
     );

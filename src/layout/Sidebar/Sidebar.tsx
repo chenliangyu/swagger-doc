@@ -1,6 +1,7 @@
 import { Layout,Tree } from 'antd';
 import {AntTreeNode,AntTreeNodeSelectedEvent} from "antd/lib/tree/Tree.d";
 import * as React from 'react';
+import "./Sidebar.css";
 
 const { Sider } = Layout;
 const { TreeNode } = Tree;
@@ -70,7 +71,7 @@ class Sidebar extends React.PureComponent<ISidebarProps>{
   }
   public render() {
     const childMapping:{[s:string]:ISpec[]} = this.sortTree(this.props.specs)
-    return <Sider collapsedWidth={20} collapsible={true} theme="light" width={250} style={{overflow:"auto"}}>
+    return <Sider className="Sidebar" collapsedWidth={20} collapsible={true} theme="light" width={250} style={{overflow:"auto"}}>
       <Tree
         showLine={true}
         selectedKeys={[this.props.selectedPath]}

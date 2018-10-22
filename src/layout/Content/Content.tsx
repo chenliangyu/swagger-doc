@@ -45,7 +45,8 @@ class PageContent extends React.PureComponent<IContentProps>{
       const realUrl = request.url.substring(startIndex);
       return {...request,url: path.join(this.props.server,realUrl)};
     }
-    return {...request,url: path.join(this.props.server,request.url)};
+    const url = path.join(this.props.server,request.url);
+    return {...request,url};
   }
   public renderPage(url:string){
     if(url){

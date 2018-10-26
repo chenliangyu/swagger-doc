@@ -16,7 +16,6 @@ function main(){
     const result = template({
       docOptions:JSON.stringify({
         specs:specs,
-        basePath:args.basePath,
         server:args.server
       })
     })

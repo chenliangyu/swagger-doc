@@ -1,5 +1,5 @@
-import { Layout,Tree } from 'antd';
-import {AntTreeNode,AntTreeNodeSelectedEvent} from "antd/lib/tree/Tree.d";
+import { Layout, Tree } from 'antd';
+import { AntTreeNode, AntTreeNodeSelectedEvent } from "antd/lib/tree/Tree.d";
 import * as React from 'react';
 import "./Sidebar.css";
 
@@ -7,15 +7,16 @@ const { Sider } = Layout;
 const { TreeNode } = Tree;
 
 export interface ISpec {
-  name:string,
-  parent?:string,
+  name: string,
+  path: string,
+  parent?: string,
 }
 
-interface ISidebarProps{
-  specs : ISpec[]
-  basePath? :string
-  onSelected: (path:string) => void
-  selectedPath:string
+interface ISidebarProps {
+  specs: ISpec[]
+  basePath?: string
+  onSelected: (path: string) => void
+  selectedPath: string
 }
 
 
@@ -24,25 +25,25 @@ const ROOT = "root";
 
 class Sidebar extends React.PureComponent<ISidebarProps>{
   public static defaultProps = {
-    basePath:""
+    basePath: ""
   }
-  public firstLeaf:string|undefined = undefined
-  public componentDidMount(){
-    if(!this.props.selectedPath && this.firstLeaf){
+  public firstLeaf: string | undefined = undefined
+  public componentDidMount() {
+    if (!this.props.selectedPath && this.firstLeaf) {
       this.selectPath(this.firstLeaf);
     }
   }
-  public selectPath(path:string){
+  public selectPath(path: string) {
     this.props.onSelected(path);
   }
-  public handleSelect = (selectedKeys:string[],e:AntTreeNodeSelectedEvent) => {
-    if(e.selectedNodes && e.selectedNodes.length){
-      const selectedNode:AntTreeNode = e.selectedNodes[0];
+  public handleSelect = (selectedKeys: string[], e: AntTreeNodeSelectedEvent) => {
+    if (e.selectedNodes && e.selectedNodes.length) {
+      const selectedNode: AntTreeNode = e.selectedNodes[0];
       this.selectPath(selectedNode.props.path);
     }
   }
-  public sortTree(specs:ISpec[]):{[s:string]:ISpec[]}{
-    const childMapping:{[s:string]:ISpec[]} = {}
+  public sortTree(specs: ISpec[]): { [s: string]: ISpec[] } {
+    const childMapping: { [s: string]: ISpec[] } = {}
     specs.forEach((spec) => {
       const parent = spec.parent || ROOT;
       const siblings = childMapping[parent] || (childMapping[parent] = []);
@@ -50,28 +51,26 @@ class Sidebar extends React.PureComponent<ISidebarProps>{
     })
     return childMapping;
   }
-  public renderTreeMenu(childMapping:{[s:string]:ISpec[]},parentKey:string = ROOT,parentPath?:string) {
-    const children:ISpec[] = childMapping[parentKey];
-    const newParentPath = parentPath || this.props.basePath
-    if(children){
+  public renderTreeMenu(childMapping: { [s: string]: ISpec[] }, parentKey: string = ROOT) {
+    const children: ISpec[] = childMapping[parentKey];
+    if (children) {
       return children.map((item) => {
-        const path = `${newParentPath}/${item.name}`;
-        if (childMapping.hasOwnProperty(item.name)) {
-          return <TreeNode selectable={false} title={item.name} key={path}>
-            {this.renderTreeMenu(childMapping,item.name,path)}
+        if (childMapping.hasOwnProperty(item.path)) {
+          return <TreeNode selectable={false} title={item.name} key={item.path}>
+            {this.renderTreeMenu(childMapping, item.path)}
           </TreeNode>;
         }
-        if(!this.firstLeaf) {
-          this.firstLeaf = path; 
+        if (!this.firstLeaf) {
+          this.firstLeaf = item.path;
         }
-        return <TreeNode key={path} title={item.name} path={path}/>;
+        return <TreeNode key={item.path} title={item.name} path={item.path} />;
       });
     }
     return null;
   }
   public render() {
-    const childMapping:{[s:string]:ISpec[]} = this.sortTree(this.props.specs)
-    return <Sider className="Sidebar" collapsedWidth={20} collapsible={true} theme="light" width={250} style={{overflow:"auto"}}>
+    const childMapping: { [s: string]: ISpec[] } = this.sortTree(this.props.specs)
+    return <Sider className="Sidebar" collapsedWidth={20} collapsible={true} theme="light" width={250} style={{ overflow: "auto" }}>
       <Tree
         showLine={true}
         selectedKeys={[this.props.selectedPath]}

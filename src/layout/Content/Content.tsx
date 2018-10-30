@@ -8,65 +8,67 @@ import "swagger-ui/dist/swagger-ui.css";
 
 const { Content } = Layout;
 
-interface IContentProps{
-  server : string
-  selectedPath:string
+interface IContentProps {
+  server: string
+  selectedPath: string
 }
-interface IRequest{
-  url:string
+interface IRequest {
+  url: string
 }
 
-const intializeState = {url:""};
+const intializeState = { url: "" };
 type State = Readonly<typeof intializeState>
 
 
 class PageContent extends React.PureComponent<IContentProps>{
-  public static getDerivedStateFromProps(props:IContentProps,state:State){
-    if(props.selectedPath !== state.url){
-      return { url:props.selectedPath }
+  public static getDerivedStateFromProps(props: IContentProps, state: State) {
+    if (props.selectedPath !== state.url) {
+      return { url: props.selectedPath }
     }
     return null;
   }
-  public state:State = intializeState
-  public container:Element|Text| null = null;
-  public componentDidMount(){
+  public state: State = intializeState
+  public container: Element | Text | null = null;
+  public componentDidMount() {
     this.container = findDOMNode(this);
     this.renderPage(this.state.url)
   }
-  public componentDidUpdate(prevProps:IContentProps,prevState:State){
-    if(prevState.url !== this.state.url){
+  public componentDidUpdate(prevProps: IContentProps, prevState: State) {
+    if (prevState.url !== this.state.url) {
       this.renderPage(this.state.url);
     }
   }
-  public requestInterceptor = (request:IRequest):IRequest => {
+  public requestInterceptor = (request: IRequest): IRequest => {
     const ABSOLUTE_URL_REGEXP = new RegExp('^([a-z]+://|//)', 'i');
-    if(ABSOLUTE_URL_REGEXP.test(request.url)){
+    if (ABSOLUTE_URL_REGEXP.test(request.url)) {
       const startIndex = request.url.search(/\/spec\/.*/);
       const realUrl = request.url.substring(startIndex);
-      return {...request,url: path.join(this.props.server,realUrl)};
+      return { ...request, url: path.join(this.props.server, realUrl) };
     }
-    const url = path.join(this.props.server,request.url);
-    return {...request,url};
+    const url = path.join(this.props.server, request.url);
+    return { ...request, url };
   }
-  public renderPage(url:string){
-    if(url){
+  public renderPage(url: string) {
+    if (url) {
+      /* tslint:disable */
       SwaggerUI({
-        deepLinking: true,
+        url,
         domNode: this.container,
-        layout: "StandaloneLayout",
-        plugins: [
-          SwaggerUI.plugins.DownloadUrl
-        ],
+        deepLinking: true,
         presets: [
           SwaggerUI.presets.apis,
           SwaggerUIStandalonePreset
         ],
-        requestInterceptor:this.requestInterceptor,
-        url,
+        requestInterceptor: this.requestInterceptor,
+        plugins: [
+          SwaggerUI.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
       })
+      /* tslint:enable */
     }
   }
-  public render(){
+  public render() {
     return (<Content className="App-content" />)
   }
 }

@@ -55,7 +55,7 @@ class PageContent extends React.PureComponent<IContentProps>{
     if (url) {
       /* tslint:disable */
       SwaggerUIBundle({
-        url: "/spec/api/project/item/item.yaml",
+        url,
         dom_id: this.container,
         deepLinking: true,
         presets: [

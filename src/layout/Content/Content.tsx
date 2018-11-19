@@ -2,9 +2,6 @@ import { Layout } from 'antd';
 import path from "path";
 import * as React from "react";
 import { findDOMNode } from 'react-dom';
-import SwaggerUI from "swagger-ui";
-import SwaggerUIStandalonePreset from "swagger-ui/dist/swagger-ui-standalone-preset";
-import "swagger-ui/dist/swagger-ui.css";
 
 const { Content } = Layout;
 
@@ -18,6 +15,12 @@ interface IRequest {
 
 const intializeState = { url: "" };
 type State = Readonly<typeof intializeState>
+
+const newWindow: any = window;
+
+
+const SwaggerUIBundle = newWindow.SwaggerUIBundle
+const SwaggerUIStandalonePreset = newWindow.SwaggerUIStandalonePreset
 
 
 class PageContent extends React.PureComponent<IContentProps>{
@@ -51,19 +54,19 @@ class PageContent extends React.PureComponent<IContentProps>{
   public renderPage(url: string) {
     if (url) {
       /* tslint:disable */
-      SwaggerUI({
-        url,
-        domNode: this.container,
+      SwaggerUIBundle({
+        url: "/spec/api/project/item/item.yaml",
+        dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
-          SwaggerUI.presets.apis,
+          SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
         ],
         requestInterceptor: this.requestInterceptor,
         plugins: [
-          SwaggerUI.plugins.DownloadUrl
+          SwaggerUIBundle.plugins.DownloadUrl
         ],
-        layout: "StandaloneLayout",
+        layout: "StandaloneLayout"
       })
       /* tslint:enable */
     }

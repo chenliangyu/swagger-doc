@@ -10,7 +10,7 @@
     "react-dom": "^16.5.2",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "3.1.0",
-    "swagger-ui": "https://github.com/chenliangyu/swagger-ui.git",
+    "swagger-ui": "chenliangyu/swagger-ui#3.18.1",
     "ts-import-plugin": "^1.5.5",
     "tslint-config-airbnb": "^5.11.0"
   },

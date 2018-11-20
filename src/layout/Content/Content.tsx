@@ -72,8 +72,9 @@ class PageContent extends React.PureComponent<IContentProps>{
     }
   }
   public render() {
+    const server = path.join(this.props.server, "/ui3");
     return (<Content className="App-content">
-      <iframe style={{ width: "100%", height: "100%" }} src={`${this.props.server}/ui3?url=${this.state.url}`} />
+      <iframe style={{ width: "100%", height: "100%" }} src={`${server}?url=${this.state.url}`} />
     </Content>)
   }
 }

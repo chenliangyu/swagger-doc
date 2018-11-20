@@ -72,7 +72,9 @@ class PageContent extends React.PureComponent<IContentProps>{
     }
   }
   public render() {
-    return (<Content className="App-content" />)
+    return (<Content className="App-content">
+      <iframe style={{ width: "100%", height: "100%" }} src={`${this.props.server}/ui3?url=${this.state.url}`} />
+    </Content>)
   }
 }
 

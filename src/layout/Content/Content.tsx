@@ -34,13 +34,13 @@ class PageContent extends React.PureComponent<IContentProps>{
   public container: Element | Text | null = null;
   public componentDidMount() {
     this.container = findDOMNode(this);
-    this.renderPage(this.state.url)
+    // this.renderPage(this.state.url)
   }
-  public componentDidUpdate(prevProps: IContentProps, prevState: State) {
-    if (prevState.url !== this.state.url) {
-      this.renderPage(this.state.url);
-    }
-  }
+  // public componentDidUpdate(prevProps: IContentProps, prevState: State) {
+  //   if (prevState.url !== this.state.url) {
+  //     this.renderPage(this.state.url);
+  //   }
+  // }
   public requestInterceptor = (request: IRequest): IRequest => {
     const ABSOLUTE_URL_REGEXP = new RegExp('^([a-z]+://|//)', 'i');
     if (ABSOLUTE_URL_REGEXP.test(request.url)) {
